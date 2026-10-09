@@ -1,0 +1,30 @@
+name: dive
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  DIVE_IMAGE: wagoodman/dive:v0.13.1
+
+jobs:
+  dive:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Версии инструментов
+        run: |
+          docker version --format 'Docker {{.Server.Version}}'
+          docker run --rm "$DIVE_IMAGE" --version
+
+      - name: Сборка образа приложения
+        run: docker build -t docker-hw2-app:ci .
+
+      - name: dive по .dive-ci
+        run: |
+          docker run --rm -e CI=true \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$PWD/.dive-ci:/.dive-ci:ro" \
+            "$DIVE_IMAGE" --ci-config /.dive-ci docker-hw2-app:ci
