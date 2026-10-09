@@ -1,13 +1,10 @@
 FROM python:3.14-slim
-
-RUN useradd --create-home --uid 10001 appuser
+RUN apt-get update
+RUN apt-get install -y build-essential
+COPY app /app
 WORKDIR /app
-
-COPY app/requirements.txt ./requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
-
-COPY --chown=appuser:appuser app/ .
-USER appuser
-
+RUN pip install -r requirements.txt
+RUN apt-get purge -y build-essential && apt-get autoremove -y
+RUN rm -rf /var/lib/apt/lists/*
 EXPOSE 8000
 CMD ["python", "app.py"]
