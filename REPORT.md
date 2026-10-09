@@ -59,3 +59,13 @@ down удаляет контейнеры и сети, том остается; d
 Правка app.py применилась без пересборки (ответ LIVE). При изменении Dockerfile watch пересобрал образ: Rebuilding service "app", service "app" successfully built
 
 ![alt text](screenshots/image9.png)
+
+### Звездочка (dive в GitHub Actions)
+Workflow собирает образ и запускает dive с CI=true и порогами из .dive-ci, без || true. На main job проходит:
+
+![alt text](screenshots/image10.png)
+
+В ветке dive-fail Dockerfile заменен на Dockerfile.before, dive вернул код 1 и job упал:
+
+![alt text](screenshots/image11.png)
+
